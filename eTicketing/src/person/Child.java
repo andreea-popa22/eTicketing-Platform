@@ -10,9 +10,6 @@ public class Child extends Client{
     public Child(String first_name, String last_name) {
         super(first_name, last_name);
     }
-    public Child(String first_name, String last_name, float discount) {
-        super(first_name, last_name);
-    }
 
     @Override
     public String toString() {

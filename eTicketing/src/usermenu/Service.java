@@ -331,7 +331,34 @@ public class Service {
         return c;
 
     }
-    //add client, child, organizer
+
+    public Client addClient(String client) {
+        Scanner scanner = new Scanner(System.in);
+        Client c = null;
+
+        System.out.println("First name: ");
+        String f_name  = scanner.nextLine();
+
+        System.out.println("Last name: ");
+        String l_name = scanner.nextLine();
+
+        switch (client.toLowerCase()) {
+            case "adult" -> {
+                System.out.println("Phone number: ");
+                Phone phone = addPhone();
+                c = new Adult(f_name, l_name, phone);
+                break;
+            }
+            case "child" -> {
+                c = new Child(f_name,l_name);
+                break;
+            }
+        }
+        return c;
+    }
+
+    //add client, child -------done (am facut metoda generica addClient
+    // add organizer
     //add list events si order events
     //meniu
     //log in
