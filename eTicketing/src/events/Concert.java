@@ -21,7 +21,7 @@ public class Concert extends Event {
         this.singers = singers;
         if (TicketsBought.events != null) {
             if (!TicketsBought.events.containsKey(this)) {
-                TicketsBought.events.put(this, 0);
+                TicketsBought.events.put(this, 0);  //update the hashmap from TicketsBought
             }
         }
     }

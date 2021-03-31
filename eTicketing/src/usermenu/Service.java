@@ -12,6 +12,7 @@ import java.util.Scanner;
 
 public class Service {
     private static Service single_instance = null;
+    //list updated in the corresponding class constructor:
     public static List<Actor> all_actors;
     public static List<Singer> all_singers;
     public static List<Location> all_locations;
@@ -439,7 +440,6 @@ public class Service {
         for (int i = 0; i < Service.all_events.size(); i++) {
             int index = i+1;
             System.out.println(index + ". " + Service.all_events.get(i).toString());
-            //System.out.println( index + ". " + Service.all_events.get(i).getName() + " , " + Service.all_events.get(i).getDate());
         }
     }
 }

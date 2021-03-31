@@ -16,6 +16,7 @@ import java.util.List;
 
 public class TestTicket {
     public static void main(String[] args) {
+        // Class for testing project features
         TicketsBought tickets = TicketsBought.getInstance();
         Phone phone1 = new Phone("0756548535");
         Client adult1 = new Adult("Ana", "Popescu", phone1);

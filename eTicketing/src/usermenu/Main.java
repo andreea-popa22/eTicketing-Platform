@@ -103,11 +103,11 @@ public class Main {
                                     }
                                 }
                                 ticket_id++;
-                                Event ticket_event = Service.all_events.get(event_index-1);
+                                Event ticket_event = Service.all_events.get(event_index-1); //assign the chosen event to the ticket instance event
                                 int ticket_seat = TicketsBought.events.get(ticket_event) + 1;
                                 float ticket_price = ticket_event.getTicket_price();
                                 Ticket ticket = new Ticket(ticket_id, ch, ticket_event, ticket_seat, ticket_price); //Create new ticket so that TicketsBought is up to date
-                                System.out.println("You have to pay: " + ticket.getPrice() + " dollars");
+                                System.out.println("You have to pay: " + ticket.getPrice() + " dollars (discount applied)"); //the price for child tickets is automatically calculated with the discount
                                 break;
                             }
                             else {
@@ -136,21 +136,21 @@ public class Main {
                         ev = Service.addConcert(org);
                         System.out.println("Congratulations! You created this event:");
                         System.out.println(ev.toString());
-                        System.out.println("Event profit: " + ((Concert) ev).calcMaxProfit());
+                        System.out.println("Event profit: " + ((Concert) ev).calcMaxProfit()); //show the organizer the profit that he is going to earn from the current event
                         break;
                     }
                     else if (choice == 2) {
                         ev = Service.addPlay(org);
                         System.out.println("Congratulations! You created this event:");
                         System.out.println(ev.toString());
-                        System.out.println("Event profit: " + ((Play) ev).calcMaxProfit());
+                        System.out.println("Event profit: " + ((Play) ev).calcMaxProfit()); //show the organizer the profit that he is going to earn from the current event
                         break;
                     }
                     else if (choice == 3) {
                         ev = Service.addConference(org);
                         System.out.println("Congratulations! You created this event:");
                         System.out.println(ev.toString());
-                        System.out.println("Event profit: " + ((Conference) ev).calcEventProfit());
+                        System.out.println("Event profit: " + ((Conference) ev).calcEventProfit()); //show the organizer the profit that he is going to earn from the current event
                         break;
                     }
                     else if (choice == 4){
@@ -167,11 +167,5 @@ public class Main {
                 System.out.println("Invalid choice! ");
             }
         }
-//        System.out.println("What type of user are you? (1. Client 2. Organizer");
-//        Service.addLocation("arena");
-//        Service.listAllSingers();
-//        Service.sortSingersByName(Service.all_singers);
-//        Service.listAllSingers();
-
     }
 }
