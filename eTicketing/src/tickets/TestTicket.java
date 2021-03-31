@@ -26,16 +26,16 @@ public class TestTicket {
         list1.add(singer2);
         Hour hour1 = new Hour(18,0);
         Hour hour2 = new Hour(20, 30);
-        Arena arena1 = new Arena("Strada Tudor Vladimirescu, nr 2", phone1, 2500, 5000, 20000 );
+        Arena arena1 = new Arena("Arenele Romane", "Strada Tudor Vladimirescu, nr 2", phone1, 2500, 5000, 20000 );
         Organizer organizer1 = new Organizer("Popa", "Andreea", phone1);
         Concert concert1 = new Concert("Psihedelia", "2021-05-07", hour1, hour2, list1, arena1, organizer1, 150.0F);
         Concert concert2 = new Concert("N&D", "2021-05-07", hour1, hour2, list1, arena1, organizer1, 150.0F);
-        Ticket ticket1 = new Ticket(1, adult1, concert1, "A1", 100);
-        Ticket ticket3 = new Ticket(3, adult1, concert2, "A3", 100);
-        Ticket ticket4 = new Ticket(4, adult1, concert2, "A4", 100);
-        System.out.println(ticket1.toString());
         Child copil1 = new Child("Alex", "Popescu");
-        Ticket ticket2 = new Ticket(2, copil1, concert1, "A2", 150);
+        Ticket ticket1 = new Ticket(1, adult1, concert1, 1, 100);
+        Ticket ticket2 = new Ticket(2, copil1, concert1, 2, 150);
+        Ticket ticket3 = new Ticket(3, adult1, concert2, 3, 100);
+        Ticket ticket4 = new Ticket(4, adult1, concert2, 4, 100);
+        System.out.println(ticket1.toString());
         System.out.println(ticket2.calcPrice());  // 50
         System.out.println(ticket2.calcPrice()); // still 50: The price cannot be reduced multiple times.
         System.out.println(tickets.toString());

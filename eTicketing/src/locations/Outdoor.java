@@ -8,8 +8,8 @@ public class Outdoor extends Location {
 
     public Outdoor() {}; // Empty constructor
 
-    public Outdoor(String address, Phone contact, Integer capacity, Integer price_per_hour, Integer surface) {
-        super(address, contact, capacity);
+    public Outdoor(String name, String address, Phone contact, Integer capacity, Integer price_per_hour, Integer surface) {
+        super(name, address, contact, capacity);
         this.price_per_hour = price_per_hour;
         this.surface = surface;
     }

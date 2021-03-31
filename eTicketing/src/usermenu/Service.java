@@ -15,6 +15,7 @@ public class Service {
     public static List<Actor> all_actors;
     public static List<Singer> all_singers;
     public static List<Location> all_locations;
+    public static List<Event> all_events;
 
     private Service() {} ;
 
@@ -27,8 +28,8 @@ public class Service {
 
     // Method for manipulating a String into an Hour class object
     public static Hour stringToHour(String s){
-        Integer hour = (Integer)(s.charAt(0) + s.charAt(1));
-        Integer minutes = (Integer)(s.charAt(3) + s.charAt(4));
+        Integer hour = Integer.parseInt(s.substring(0,2));
+        Integer minutes = Integer.parseInt(s.substring(3,5));
         Hour h = new Hour(hour, minutes);
         return h;
     }
@@ -49,21 +50,21 @@ public class Service {
         Integer price_per_hour = scanner.nextInt();
 
         System.out.println("Music type: ");
-        String type = scanner.nextLine().toUpperCase();
-        SingerType stype = SingerType.valueOf(type);
+        String type = scanner.next();
+        SingerType stype = SingerType.valueOf(type.toUpperCase());
 
         Singer s = new Singer(name, price_per_hour, stype);  //Calling parameterized constructor so that the list of singers would be updated
         return s;
     }
 
     public static Actor addActor() {
-        Scanner scanner = new Scanner(System.in);
+        Scanner scanner1 = new Scanner(System.in);
 
-        System.out.println("Singer's name: ");
-        String name = scanner.nextLine();
+        System.out.println("Actor's name: ");
+        String name = scanner1.nextLine();
 
         System.out.println("Price per play: ");
-        Integer price_per_play = scanner.nextInt();
+        Integer price_per_play = scanner1.nextInt();
 
         Actor a = new Actor(name, price_per_play);
         return a;
@@ -72,6 +73,9 @@ public class Service {
     public static Location addLocation(String location) {
         Scanner scanner = new Scanner(System.in);
         Location e = null;
+
+        System.out.println("Location name: ");
+        String name = scanner.nextLine();
 
         System.out.println("Address of the location: ");
         String address = scanner.nextLine();
@@ -90,19 +94,15 @@ public class Service {
 
         switch (location.toLowerCase()) {
             case "arena" -> {
-                e = new Arena(address, contact, capacity, price_per_hour, surface);
-                break;
+                e = new Arena(name, address, contact, capacity, price_per_hour, surface);
             }
             case "outdoor" -> {
-                e = new Outdoor(address, contact, capacity, price_per_hour, surface);
-                break;
+                e = new Outdoor(name, address, contact, capacity, price_per_hour, surface);
             }
             case "theatre" -> {
-                e = new Theatre(address, contact, capacity, price_per_hour, surface);
-                break;
+                e = new Theatre(name, address, contact, capacity, price_per_hour, surface);
             }
         }
-
         return e;
     }
 
@@ -130,7 +130,16 @@ public class Service {
         return l;
     }
 
-    public Concert addConcert() {
+    public static List<Location> listSortedLocations(List<Location> l) {
+        l.sort(Location::compareTo);
+        for (int i = 0; i < Service.all_locations.size(); i++) {
+            int index = i + 1;
+            System.out.println(index + ". " + Service.all_locations.get(i).getName());
+        }
+        return l;
+    }
+
+    public static Concert addConcert(Organizer org) {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Name of the concert: ");
@@ -151,10 +160,12 @@ public class Service {
         List sin = new ArrayList();
         System.out.println("Which singers from this list do you want to add? (ex: 1 3 7 23 / you can leave it blank): ");
         String indexes = scanner.nextLine();
-        String[] ind = indexes.split(" ");
-        for (int i = 0; i < ind.length; i++) {
-            int index = Integer.parseInt(ind[i]) - 1;
-            sin.add(all_singers.get(index)); //add the singer of the current index in the concert singers list
+        if (indexes != "") {
+            String[] ind = indexes.split(" ");
+            for (int i = 0; i < ind.length; i++) {
+                int index = Integer.parseInt(ind[i]) - 1;
+                sin.add(all_singers.get(index)); //add the singer of the current index in the concert singers list
+            }
         }
         System.out.println("How many new singers do you want to add?: ");
         int no_of_new_singers = scanner.nextInt();
@@ -166,76 +177,156 @@ public class Service {
         System.out.println("1. Add a new location");
         System.out.println("2. Use an existing one ");
         int choice = scanner.nextInt();
-        Location location = null;
-        if (choice == 1) {
-            System.out.println("What kind of location do you want to add? (Arena / Outdoor / Theatre");
-            String choice_l = scanner.nextLine().toLowerCase();
-            if (choice_l == "arena") {
-                location = (Arena) addLocation(choice_l);
+        Location event_location = null;
+        while (true) {
+            if (choice == 1) {
+                System.out.println("What kind of location do you want to add? 1.Arena 2.Outdoor 3.Theatre");
+                while (true) {
+                    choice = scanner.nextInt();
+                    if (choice == 1) {
+                        event_location = Service.addLocation("arena");
+                        break;
+                    } else if (choice == 2) {
+                        event_location = Service.addLocation("outdoor");
+                        break;
+                    } else if (choice == 3) {
+                        event_location = Service.addLocation("theatre");
+                        break;
+                    } else {
+                        System.out.println("Invalid choice! ");
+                    }
+                }
+                break;
             }
-            else if (choice_l == "outdoor") {
-                location = (Outdoor) addLocation(choice_l);
+            else if (choice == 2) {
+                System.out.println("The list of locations ordered by capacity:");
+                List<Location> locs = Service.listSortedLocations(Service.all_locations);
+                System.out.println("Choose location (write the index)");
+                int location_index = 0;
+                while (true) {
+                    location_index = scanner.nextInt();
+                    if (location_index > locs.size()) {
+                        System.out.println("Invalid index!");
+                    } else {
+                        event_location = locs.get(location_index-1);
+                        break;
+                    }
+                }
+                break;
             }
             else {
-                location = (Theatre) addLocation(choice_l);
-            }
-        }
-        else if (choice == 2) {
-            System.out.println("In which order do you want the existing locations to be printed? 1. Alphabetical order 2. Ascending by price per hour");
-            Integer choice_l = scanner.nextInt();
-            if (choice_l == 1) {
-                //;
-            }
-            else if (choice_l == 2) {
-                //;
-            }
-            else {
-                //Eroare try catch
                 System.out.println("Invalid choice!");
             }
         }
-        else {
-            //Eroare try catch
-            System.out.println("Invalid choice!");
-        }
-
-        //this.organizer = eu
-        Organizer organizer = null;
 
         System.out.println("What is the standard price of the event ticket?");
         Integer ticket_price = scanner.nextInt();
 
-        Concert c = new Concert(name, date, start_time, end_time, sin, location, organizer, ticket_price);
+        Concert c = new Concert(name, date, start_time, end_time, sin, event_location, org, ticket_price);
         return c;
 
     }
 
-    public Play addPlay() {
+    public static Play addPlay(Organizer org) {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Name of the Play: ");
         String name = scanner.nextLine();
 
         System.out.println("Theme of the play (COMEDY / TRAGEDY / HISTORICAL / MUSICAL)");
-        String t = scanner.nextLine().toUpperCase();
-        PlayType theme = PlayType.valueOf(t);
+        String t = scanner.nextLine();
+        PlayType theme = PlayType.valueOf(t.toUpperCase());
+
+        System.out.println("Date of the event: ");
+        String date = scanner.nextLine();
+
+        System.out.println("Start time (hh:mm): ");
+        Hour start_time = Service.stringToHour(scanner.nextLine());
+
+        System.out.println("End time (hh:mm): ");
+        Hour end_time = Service.stringToHour(scanner.nextLine());
 
         System.out.println("These are the existing actors in alphabetical order: ");
         all_actors = sortActorsByName(all_actors);
-        listAllSingers();
+        listAllActors();
         List act = new ArrayList();
         System.out.println("Which actors from this list do you want to add? (ex: 1 3 7 23 / you can leave it blank): ");
         String indexes = scanner.nextLine();
-        String[] ind = indexes.split(" ");
-        for (int i = 0; i < ind.length; i++) {
-            int index = Integer.parseInt(ind[i]) - 1;
-            act.add(all_actors.get(index)); //add the actor of the current index in the play actors list
+        if (indexes != "") {
+            String[] ind = indexes.split(" ");
+            for (int i = 0; i < ind.length; i++) {
+                int index = Integer.parseInt(ind[i]) - 1;
+                act.add(all_actors.get(index)); //add the actor of the current index in the play actors list
+            }
         }
         System.out.println("How many new actors do you want to add?: ");
-        int no_of_new_singers = scanner.nextInt();
-        for (int i = 0; i < no_of_new_singers; i++){
+        int no_of_new_actors = scanner.nextInt();
+        for (int i = 0; i < no_of_new_actors; i++){
             act.add(addActor());
         }
+
+        System.out.println("Do you want to:");
+        System.out.println("1. Add a new location");
+        System.out.println("2. Use an existing one ");
+        Location event_location = null;
+        while (true) {
+            int choice = scanner.nextInt();
+            if (choice == 1) {
+                System.out.println("What kind of location do you want to add? 1.Arena 2.Outdoor 3.Theatre");
+                while (true) {
+                    choice = scanner.nextInt();
+                    if (choice == 1) {
+                        event_location = Service.addLocation("arena");
+                        break;
+                    } else if (choice == 2) {
+                        event_location = Service.addLocation("outdoor");
+                        break;
+                    } else if (choice == 3) {
+                        event_location = Service.addLocation("theatre");
+                        break;
+                    } else {
+                        System.out.println("Invalid choice! ");
+                    }
+                }
+                break;
+            } else if (choice == 2) {
+                System.out.println("The list of locations ordered by capacity:");
+                List<Location> locs = Service.listSortedLocations(Service.all_locations);
+                System.out.println("Choose location (write the index)");
+                int location_index = 0;
+                while (true) {
+                    location_index = scanner.nextInt();
+                    if (location_index > locs.size()) {
+                        System.out.println("Invalid index!");
+                    } else {
+                        event_location = locs.get(location_index-1);
+                        break;
+                    }
+                }
+                break;
+            } else {
+                System.out.println("Invalid choice!");
+            }
+        }
+
+        System.out.println("What is the standard price of the event ticket?");
+        Integer ticket_price = scanner.nextInt();
+
+        Play p = new Play(name, theme, act, date, start_time, end_time, event_location, org, ticket_price);
+        return p;
+    }
+
+    public static Conference addConference(Organizer org) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Name of the conference: ");
+        String name = scanner.nextLine();
+
+        System.out.println("Who is the host of the conference? ");
+        String host = scanner.nextLine();
+
+        System.out.println("What is the theme of the conference? ");
+        String theme = scanner.nextLine();
 
         System.out.println("Date of the event: ");
         String date = scanner.nextLine();
@@ -249,92 +340,63 @@ public class Service {
         System.out.println("Do you want to:");
         System.out.println("1. Add a new location");
         System.out.println("2. Use an existing one ");
-        int choice = scanner.nextInt();
-        Location location = null;
-        if (choice == 1) {
-            System.out.println("What kind of location do you want to add? (1. Arena 2. Outdoor 3. Theatre");
-            String choice_l = scanner.nextLine().toLowerCase();
-            if (choice_l == "arena") {
-                location = (Arena) addLocation(choice_l);
+        Location event_location = null;
+        while (true) {
+            int choice = scanner.nextInt();
+            if (choice == 1) {
+                System.out.println("What kind of location do you want to add? 1.Arena 2.Outdoor 3.Theatre");
+                while (true) {
+                    choice = scanner.nextInt();
+                    if (choice == 1) {
+                        event_location = Service.addLocation("arena");
+                        break;
+                    } else if (choice == 2) {
+                        event_location = Service.addLocation("outdoor");
+                        break;
+                    } else if (choice == 3) {
+                        event_location = Service.addLocation("theatre");
+                        break;
+                    } else {
+                        System.out.println("Invalid choice! ");
+                    }
+                }
+                break;
             }
-            else if (choice_l == "outdoor") {
-                location = (Outdoor) addLocation(choice_l);
+            else if (choice == 2) {
+                System.out.println("The list of locations ordered by capacity:");
+                List<Location> locs = Service.listSortedLocations(Service.all_locations);
+                System.out.println("Choose location (write the index)");
+                int location_index = 0;
+                while (true) {
+                    location_index = scanner.nextInt();
+                    if (location_index > locs.size()) {
+                        System.out.println("Invalid index!");
+                    }
+                    else {
+                        event_location = locs.get(location_index-1);
+                        break;
+                    }
+                }
+                break;
             }
             else {
-                location = (Theatre) addLocation(choice_l);
+                System.out.println("Invalid choice!");
             }
         }
-        else if (choice == 2) {
-            System.out.println("List of the existing locations ascending by price per hour");
-            //list locations
-        }
-        else {
-            //Eroare try catch
-            System.out.println("Invalid choice!");
-        }
-
-        //this.organizer = eu
-        Organizer organizer = new Organizer();
 
         System.out.println("What is the standard price of the event ticket?");
-        Integer ticket_price = scanner.nextInt();
+        float ticket_price = scanner.nextInt();
 
-        Play p = new Play(name, theme, act, date, start_time, end_time, location, organizer, ticket_price);
-        return p;
-    }
-
-    public Conference addConference() {
-        Scanner scanner = new Scanner(System.in);
-        Conference c = new Conference();
-
-        System.out.println("Name of the conference: ");
-        c.setName(scanner.nextLine());
-
-        System.out.println("Who is the host of the conference? ");
-        c.setHost(scanner.nextLine());
-
-        System.out.println("What is the theme of the conference? ");
-        c.setTheme(scanner.nextLine());
-
-        System.out.println("Date of the event: ");
-        c.setDate(scanner.nextLine());
-
-        System.out.println("Start time (hh:mm): ");
-        c.setStart_time(Service.stringToHour(scanner.nextLine()));
-
-        System.out.println("End time (hh:mm): ");
-        c.setEnd_time(Service.stringToHour(scanner.nextLine()));
-
-        System.out.println("Do you want to:");
-        System.out.println("1. Add a new location");
-        System.out.println("2. Use an existing one ");
-        int choice = scanner.nextInt();
-        if (choice == 1) {
-            System.out.println("What kind of location do you want to add? (1. Arena 2. Outdoor 3. Theatre");
-            String choice_l = scanner.nextLine().toLowerCase();
-            addLocation(choice_l); // Generic method for creating a new location
-        }
-        else if (choice == 2) {
-            System.out.println("List of the existing locations ascending by price per hour");
-            //list locations
-        }
-        else {
-            //Eroare try catch
-            System.out.println("Invalid choice!");
-        }
-
-        //this.organizer = eu
-
-        System.out.println("What is the standard price of the event ticket?");
-        c.setTicket_price(scanner.nextInt());
-
+        Conference c = new Conference(name, host, theme, date, start_time, end_time, event_location, org, ticket_price);
         return c;
 
     }
 
-    public Client addClient(String client) {
+    public static Client addClient(String client) {
         Scanner scanner = new Scanner(System.in);
         Client c = null;
+
+        System.out.println("Enter the details of the ticket holder");
 
         System.out.println("First name: ");
         String f_name  = scanner.nextLine();
@@ -357,12 +419,27 @@ public class Service {
         return c;
     }
 
-    //add client, child -------done (am facut metoda generica addClient
-    // add organizer
-    //add list events si order events
-    //meniu
-    //log in
-    //add ticket
-    //comparator sau comparable (eroare in event)
-    //DE MODIF METODELE ADD SA APELEZE CONSTR CU PARAM -----done
+    public static Organizer addOrganizer() {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("First name: ");
+        String f_name  = scanner.nextLine();
+
+        System.out.println("Last name: ");
+        String l_name = scanner.nextLine();
+
+        System.out.println("Phone number: ");
+        Phone phone = addPhone();
+        Organizer o = new Organizer(f_name, l_name, phone);
+
+        return o;
+    }
+
+    public static void listEvents() {
+        for (int i = 0; i < Service.all_events.size(); i++) {
+            int index = i+1;
+            System.out.println(index + ". " + Service.all_events.get(i).toString());
+            //System.out.println( index + ". " + Service.all_events.get(i).getName() + " , " + Service.all_events.get(i).getDate());
+        }
+    }
 }

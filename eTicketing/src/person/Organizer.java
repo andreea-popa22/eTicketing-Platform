@@ -9,16 +9,13 @@ public class Organizer {
     private String first_name;
     private String last_name;
     private Phone phone;
-    //private List<Event> events;
 
     public Organizer() {}; // Empty constructor
-
 
     public Organizer(String first_name, String last_name, Phone phone) {
         this.first_name = first_name;
         this.last_name = last_name;
         this.phone = phone;
-        //this.events = events;
     }
 
     public String getFirst_name() {

@@ -2,6 +2,7 @@ package events;
 
 import person.Organizer;
 import locations.Location;
+import usermenu.Service;
 
 import java.util.Objects;
 
@@ -22,6 +23,7 @@ public abstract class Event {
         this.organizer = organizer;
         this.location = location;
         this.ticket_price = ticket_price;
+        Service.all_events.add(this);
     }
 
     public String getDate() {
@@ -74,7 +76,7 @@ public abstract class Event {
 
     @Override
     public String toString() {
-        return "Date = " + date + "; Start time = " + start_time + "; End time = " + end_time + "; Organizer: " + organizer.toString() + "; Location: " + location.toString();
+        return "Date = " + date + "; Start time = " + start_time + "; End time = " + end_time + "; Organizer: " + organizer.toString() + "; Location: " + location.toString() + "; Ticket price: " + ticket_price;
     }
 
     @Override

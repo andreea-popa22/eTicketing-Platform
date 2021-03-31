@@ -24,8 +24,8 @@ public class Conference extends Event {
         this.host = host;
         this.theme = theme;
         if (TicketsBought.events != null) {
-            if (!TicketsBought.events.containsKey(this.name)) {
-                TicketsBought.events.put(this.name, 0);
+            if (!TicketsBought.events.containsKey(this)) {
+                TicketsBought.events.put(this, 0);
             }
         }
     }
@@ -73,7 +73,7 @@ public class Conference extends Event {
     }
 
     @Override
-    protected float calcMaxProfit() {
+    public float calcMaxProfit() {
         float v = this.getLocation().getCapacity() * this.getTicket_price();
         return v;
     }

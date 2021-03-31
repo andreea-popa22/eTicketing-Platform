@@ -8,8 +8,8 @@ public class Arena extends Location {
 
     public Arena() {}; // Empty constructor
 
-    public Arena(String address, Phone contact, Integer capacity, Integer price_per_hour, Integer surface) {
-        super(address, contact, capacity);
+    public Arena(String name, String address, Phone contact, Integer capacity, Integer price_per_hour, Integer surface) {
+        super(name, address, contact, capacity);
         this.price_per_hour = price_per_hour;
         this.surface = surface;
     }
@@ -49,9 +49,4 @@ public class Arena extends Location {
         return Objects.hash(super.hashCode(), price_per_hour, surface);
     }
 
-//    @Override
-//    public int compareTo(Location o) {
-//        //return this.price_per_hour.compareTo((Arena)o.getPrice_per_hour());
-//        return 0;
-//    }
 }

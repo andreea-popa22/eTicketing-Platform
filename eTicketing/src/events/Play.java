@@ -23,8 +23,8 @@ public class Play extends Event {
         this.theme = theme;
         this.actors = actors;
         if (TicketsBought.events != null) {
-            if (!TicketsBought.events.containsKey(this.name)) {
-                TicketsBought.events.put(this.name, 0);
+            if (!TicketsBought.events.containsKey(this)) {
+                TicketsBought.events.put(this, 0);
             }
         }
     }
@@ -73,7 +73,7 @@ public class Play extends Event {
     }
 
     @Override
-    protected float calcMaxProfit() {
+    public float calcMaxProfit() {
         float v = this.getLocation().getCapacity() * this.getTicket_price();
         return v;
     }

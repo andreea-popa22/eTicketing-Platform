@@ -11,22 +11,21 @@ public class Ticket {
     private Integer id;
     private Client client;
     private Event event;
-    private String seat;
+    private Integer seat;
     private float price;
     private boolean reduced = false;
 
     public Ticket() {}; // Empty constructor
 
 
-    public Ticket(Integer id, Client client, Event event, String seat, float price) {
+    public Ticket(Integer id, Client client, Event event, Integer seat, float price) {
         this.id = id;
         this.client = client;
         this.event = event;
         this.seat = seat;
         this.price = price;
         calcPrice();  // calculate the price of the ticket depending oh the type of the client
-        String event_name = this.event.getName();
-        TicketsBought.events.put(event_name, TicketsBought.events.get(event_name) + 1); // Increment the number of tickets for the current event in the hashmap
+        TicketsBought.events.put(event, TicketsBought.events.get(event) + 1); // Increment the number of tickets for the current event in the hashmap
     }
 
     public Integer getId() {
@@ -53,11 +52,11 @@ public class Ticket {
         this.event = event;
     }
 
-    public String getSeat() {
+    public Integer getSeat() {
         return seat;
     }
 
-    public void setSeat(String seat) {
+    public void setSeat(Integer seat) {
         this.seat = seat;
     }
 
