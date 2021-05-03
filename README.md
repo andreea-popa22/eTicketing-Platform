@@ -59,23 +59,27 @@ Auxiliary classes:
 
 **Service** methods:
 
-| Method                                      | Description                                                  |
-| ------------------------------------------- | ------------------------------------------------------------ |
-| ***stringToHour(String s)***                | returns an Hour class object given a string as a parameter; it is used for processing the user input |
-| ***addPhone()***                            | creates a Phone class object                                 |
-| ***addSinger()***                           | creates a Singer class object; includes processing a string into Enum type |
-| ***addActor()***                            | creates an Actor class object                                |
-| ***addLocation(String s)***                 | creates and returns an/a Arena/Outdoor/Theatre class object casted to Event type |
-| ***listAllSingers()***                      | lists all singers from the Service list that is updated in the Singer class constructor |
-| ***listAllActors()***                       | lists all actors from the Service list that is updated in the Actor class constructor |
-| ***sortSingersByName(List <Singer> l)***    | returns an alphabetical ordered list of singers (sorted collection) |
-| ***sortActorsByName(List<Actor> l)***       | returns an alphabetical ordered list of actors (sorted collection) |
-| ***listSortedLocations(List<Location> l)*** | returns a list of sorted locations in ascending order based on capacity; it uses compareTo overridden method from Comparable interface |
-| ***addConcert(Organizer org)***             | returns a new instance of Concert class based on the input data; it also calls another methods such as addLocation if the user wants to add a new location for the event, or listLocations if the user wants to assign an existing location to the event |
-| ***addPlay(Organizer org)***                | returns a new instance of Play class based on the input data; it also calls another methods such as addLocation if the user wants to add a new location for the event, or listLocations if the user wants to assign an existing location to the event |
-| ***addConference(Organizer org)***          | returns a new instance of Conference class based on the input data; it also calls another methods such as addLocation if the user wants to add a new location for the event, or listLocations if the user wants to assign an existing location to the event |
-| ***addClient(String s)***                   | returns an/a Adult/Child class instance casted to Client class |
-| ***addOrganizer()***                        | return a new Organizer class instance based on the input data |
-| ***listEvents()***                          | lists all the existing events                                |
+| Method                                                    | Description                                                  |
+| --------------------------------------------------------- | ------------------------------------------------------------ |
+| ***stringToHour(String s)***                              | returns an Hour class object given a string as a parameter; it is used for processing the user input |
+| ***addPhone()***                                          | creates a Phone class object                                 |
+| ***addSinger()***                                         | creates a Singer class object; includes processing a string into Enum type |
+| ***addActor()***                                          | creates an Actor class object                                |
+| ***addLocation(String s)***                               | creates and returns an/a Arena/Outdoor/Theatre class object casted to Event type |
+| ***listAllSingers()***                                    | lists all singers from the Service list that is updated in the Singer class constructor |
+| ***listAllActors()***                                     | lists all actors from the Service list that is updated in the Actor class constructor |
+| ***sortSingersByName(List <Singer> l)***                  | returns an alphabetical ordered list of singers (sorted collection) |
+| ***sortActorsByName(List<Actor> l)***                     | returns an alphabetical ordered list of actors (sorted collection) |
+| ***listSortedLocations(List<Location> l)***               | returns a list of sorted locations in ascending order based on capacity; it uses compareTo overridden method from Comparable interface |
+| ***addConcert(Organizer org)***                           | returns a new instance of Concert class based on the input data; it also calls another methods such as addLocation if the user wants to add a new location for the event, or listLocations if the user wants to assign an existing location to the event |
+| ***addPlay(Organizer org)***                              | returns a new instance of Play class based on the input data; it also calls another methods such as addLocation if the user wants to add a new location for the event, or listLocations if the user wants to assign an existing location to the event |
+| ***addConference(Organizer org)***                        | returns a new instance of Conference class based on the input data; it also calls another methods such as addLocation if the user wants to add a new location for the event, or listLocations if the user wants to assign an existing location to the event |
+| ***addClient(String s)***                                 | returns an/a Adult/Child class instance casted to Client class |
+| ***addOrganizer()***                                      | return a new Organizer class instance based on the input data |
+| ***listEvents()***                                        | lists all the existing events                                |
+| ***readFromCSV(String option, String path)***             | generic method for reading objects information from CSV file; it returns an array of CSV corresponding class objects (singers / actors / arenas / outdoors / theatres); it is called by other methods such as addConcert, addPlay |
+| ***writeToCSV(E object, String path)***                   | generic method for writing objects information in CSV file; String 'path' argument is used to create the FileWriter object for the prerequisite class |
+| ***auditWrite(String ts, String object, String action)*** | writes in audit.csv file the action name, the object class which readToCSV / writeToCSV method was called for and also the timestamp; it is called in the previous mentioned methods using suitable arguments |
 
-All the addClass methods call the corresponding parameterized constructor so that the Service all_class lists are up to date.
+- For the first stage: All the addClass methods call the corresponding parameterized constructor so that the Service all_class lists are up to date. 
+- For the second stage: Some of the all_class lists are not used anymore due to the CSV reading method

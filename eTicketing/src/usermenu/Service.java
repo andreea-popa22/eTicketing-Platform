@@ -2,9 +2,11 @@ package usermenu;
 
 import locations.*;
 import person.*;
-import tickets.*;
 import events.*;
 
+import java.io.*;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -12,11 +14,12 @@ import java.util.Scanner;
 
 public class Service {
     private static Service single_instance = null;
-    //list updated in the corresponding class constructor:
+    //lists updated in the corresponding class constructor:
     public static List<Actor> all_actors;
     public static List<Singer> all_singers;
     public static List<Location> all_locations;
     public static List<Event> all_events;
+    public static FileWriter fileWriter;
 
     private Service() {} ;
 
@@ -55,6 +58,11 @@ public class Service {
         SingerType stype = SingerType.valueOf(type.toUpperCase());
 
         Singer s = new Singer(name, price_per_hour, stype);  //Calling parameterized constructor so that the list of singers would be updated
+        try {
+            writeToCSV(s, "src/singers.csv");
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
         return s;
     }
 
@@ -68,6 +76,11 @@ public class Service {
         Integer price_per_play = scanner1.nextInt();
 
         Actor a = new Actor(name, price_per_play);
+        try {
+            writeToCSV(a, "src/actors.csv");
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
         return a;
     }
 
@@ -96,12 +109,27 @@ public class Service {
         switch (location.toLowerCase()) {
             case "arena" -> {
                 e = new Arena(name, address, contact, capacity, price_per_hour, surface);
+                try {
+                    writeToCSV(e, "src/arenas.csv");
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
             }
             case "outdoor" -> {
                 e = new Outdoor(name, address, contact, capacity, price_per_hour, surface);
+                try {
+                    writeToCSV(e, "src/outdoors.csv");
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
             }
             case "theatre" -> {
                 e = new Theatre(name, address, contact, capacity, price_per_hour, surface);
+                try {
+                    writeToCSV(e, "src/theatres.csv");
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
             }
         }
         return e;
@@ -156,8 +184,20 @@ public class Service {
         Hour end_time = Service.stringToHour(scanner.nextLine());
 
         System.out.println("These are the existing singers in alphabetical order: ");
-        all_singers = sortSingersByName(all_singers);
-        listAllSingers();
+        //all_singers = sortSingersByName(all_singers);
+        //listAllSingers();
+
+        ArrayList<Singer> objects = null;
+        try {
+            objects = readFromCSV("singer", "src/singers.csv" );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        for (int i = 0; i < objects.size(); i++){
+            int index = i + 1;
+            System.out.println(index + ". " + objects.get(i).toString());
+        }
+
         List sin = new ArrayList();
         System.out.println("Which singers from this list do you want to add? (ex: 1 3 7 23 / you can leave it blank): ");
         String indexes = scanner.nextLine();
@@ -186,12 +226,27 @@ public class Service {
                     choice = scanner.nextInt();
                     if (choice == 1) {
                         event_location = Service.addLocation("arena");
+                        try {
+                            writeToCSV(event_location, "src/arenas.csv");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                         break;
                     } else if (choice == 2) {
                         event_location = Service.addLocation("outdoor");
+                        try {
+                            writeToCSV(event_location, "src/outdoors.csv");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                         break;
                     } else if (choice == 3) {
                         event_location = Service.addLocation("theatre");
+                        try {
+                            writeToCSV(event_location, "src/theatres.csv");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                         break;
                     } else {
                         System.out.println("Invalid choice! ");
@@ -206,7 +261,7 @@ public class Service {
                 int location_index = 0;
                 while (true) {
                     location_index = scanner.nextInt();
-                    if (location_index > locs.size()) {
+                    if (location_index > locs.size() || location_index <= 0) {
                         System.out.println("Invalid index!");
                     } else {
                         event_location = locs.get(location_index-1);
@@ -248,8 +303,20 @@ public class Service {
         Hour end_time = Service.stringToHour(scanner.nextLine());
 
         System.out.println("These are the existing actors in alphabetical order: ");
-        all_actors = sortActorsByName(all_actors);
-        listAllActors();
+        //all_actors = sortActorsByName(all_actors);
+        //listAllActors();
+
+        ArrayList<Actor> objects = null;
+        try {
+            objects = readFromCSV("actor", "src/actors.csv" );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        for (int i = 0; i < objects.size(); i++){
+            int index = i + 1;
+            System.out.println(index + ". " + objects.get(i).toString());
+        }
+
         List act = new ArrayList();
         System.out.println("Which actors from this list do you want to add? (ex: 1 3 7 23 / you can leave it blank): ");
         String indexes = scanner.nextLine();
@@ -440,6 +507,161 @@ public class Service {
         for (int i = 0; i < Service.all_events.size(); i++) {
             int index = i+1;
             System.out.println(index + ". " + Service.all_events.get(i).toString());
+        }
+    }
+
+    public static <E> ArrayList<E> readFromCSV(String option, String path) throws IOException {
+        BufferedReader csvReader = new BufferedReader(new FileReader(path));
+        String row;
+        ArrayList<E> objects = new ArrayList<E>();
+        csvReader.readLine(); // Skip the first line (the header)
+        while ((row = csvReader.readLine()) != null){
+            String[] data = row.split(",");
+            switch (option.toLowerCase()) {
+                case "singer" -> {
+                    String name = data[0];
+                    Integer price_per_hour = Integer.parseInt(data[1]);
+                    SingerType music_type = SingerType.valueOf(data[2].toUpperCase());
+                    Singer s = new Singer(name, price_per_hour,music_type);
+                    objects.add((E) s);
+                }
+                case "actor" -> {
+                    String name = data[0];
+                    Integer price_per_play = Integer.parseInt(data[1]);
+                    Actor s = new Actor(name, price_per_play);
+                    objects.add((E) s);
+                }
+                case "arena" -> {
+                    String name = data[0];
+                    String address = data[1];
+                    Phone phone = new Phone(data[2]);
+                    Integer capacity = Integer.parseInt(data[3]);
+                    Integer price_per_hour = Integer.parseInt(data[4]);
+                    Integer surface = Integer.parseInt(data[5]);
+                    Arena s = new Arena(name, address, phone, capacity, price_per_hour, surface);
+                    objects.add((E) s);
+                }
+                case "outdoor" -> {
+                    String name = data[0];
+                    String address = data[1];
+                    Phone phone = new Phone(data[2]);
+                    Integer capacity = Integer.parseInt(data[3]);
+                    Integer price_per_hour = Integer.parseInt(data[4]);
+                    Integer surface = Integer.parseInt(data[5]);
+                    Outdoor s = new Outdoor(name, address, phone, capacity, price_per_hour, surface);
+                    objects.add((E) s);
+                }
+                case "theatre" -> {
+                    String name = data[0];
+                    String address = data[1];
+                    Phone phone = new Phone(data[2]);
+                    Integer capacity = Integer.parseInt(data[3]);
+                    Integer price_per_hour = Integer.parseInt(data[4]);
+                    Integer surface = Integer.parseInt(data[5]);
+                    Theatre s = new Theatre(name, address, phone, capacity, price_per_hour, surface);
+                    objects.add((E) s);
+                }
+            }
+        }
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        auditWrite(timestamp.toString(), option.toLowerCase(), "Read");
+        csvReader.close();
+        return objects;
+    }
+
+    public static <E> void writeToCSV(E object, String path) throws IOException {
+        File file = new File(path);
+        if (file.isFile()) {
+            if (file.length() <= 1) {
+                FileWriter csvWriter = new FileWriter(path, true);
+                switch (object.getClass().getSimpleName()) {
+                    case "Singer" -> csvWriter.append("Name,Price per hour,Music Type\n");
+                    case "Actor" -> csvWriter.append("Name,Price per play\n");
+                    case "Arena", "Theatre", "Outdoor" -> csvWriter.append("Name,Address,Contact,Capacity,Price per hour,Surface\n");
+                }
+                csvWriter.close();
+            }
+            FileWriter csvWriter = new FileWriter(path, true);
+            switch (object.getClass().getSimpleName()) {
+                case "Singer" -> {
+                    Singer s = (Singer) object;
+                    csvWriter.append(s.getName());
+                    csvWriter.append(",");
+                    csvWriter.append(s.getPrice_per_hour().toString());
+                    csvWriter.append(",");
+                    csvWriter.append(s.getMusic_type().toString());
+                    csvWriter.append("\n");
+                }
+                case "Actor" -> {
+                    Actor s = (Actor) object;
+                    csvWriter.append(s.getName());
+                    csvWriter.append(",");
+                    csvWriter.append(s.getPrice_per_play().toString());
+                    csvWriter.append("\n");
+                }
+                case "Arena" -> {
+                    Arena s = (Arena) object;
+                    csvWriter.append(s.getName());
+                    csvWriter.append(",");
+                    csvWriter.append(s.getAddress());
+                    csvWriter.append(",");
+                    csvWriter.append(s.getContact().toString());
+                    csvWriter.append(",");
+                    csvWriter.append(s.getCapacity().toString());
+                    csvWriter.append(",");
+                    csvWriter.append(s.getPrice_per_hour().toString());
+                    csvWriter.append(",");
+                    csvWriter.append(s.getSurface().toString());
+                    csvWriter.append("\n");
+                }
+                case "Outdoor" -> {
+                    Outdoor s = (Outdoor) object;
+                    csvWriter.append(s.getName());
+                    csvWriter.append(",");
+                    csvWriter.append(s.getAddress());
+                    csvWriter.append(",");
+                    csvWriter.append(s.getContact().toString());
+                    csvWriter.append(",");
+                    csvWriter.append(s.getCapacity().toString());
+                    csvWriter.append(",");
+                    csvWriter.append(s.getPrice_per_hour().toString());
+                    csvWriter.append(",");
+                    csvWriter.append(s.getSurface().toString());
+                    csvWriter.append("\n");
+                }
+                case "Theatre" -> {
+                    Theatre s = (Theatre) object;
+                    csvWriter.append(s.getName());
+                    csvWriter.append(",");
+                    csvWriter.append(s.getAddress());
+                    csvWriter.append(",");
+                    csvWriter.append(s.getContact().toString());
+                    csvWriter.append(",");
+                    csvWriter.append(s.getCapacity().toString());
+                    csvWriter.append(",");
+                    csvWriter.append(s.getPrice_per_hour().toString());
+                    csvWriter.append(",");
+                    csvWriter.append(s.getSurface().toString());
+                    csvWriter.append("\n");
+                }
+            }
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            auditWrite(timestamp.toString(), object.getClass().getSimpleName(), "Write");
+            csvWriter.close();
+        }
+    }
+
+    public static void auditWrite(String ts, String object, String action) throws IOException{
+        File file = new File("src/audit.csv");
+        if (file.isFile()) {
+            if (file.length() <= 1) {
+                FileWriter csvWriter = new FileWriter("src/audit.csv", true);
+                csvWriter.append("Action name,Timestamp\n");
+                csvWriter.close();
+            }
+            FileWriter csvWriter = new FileWriter("src/audit.csv", true);
+            csvWriter.append(action + " " + object + "," + ts + "\n");
+            csvWriter.close();
         }
     }
 }
