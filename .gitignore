@@ -1,3 +1,5 @@
 .iml
 eTicketing_Platform.iml
 eTicketing_Platform.iml
+.idea/
+out/production
