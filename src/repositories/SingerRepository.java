@@ -14,13 +14,22 @@ public class SingerRepository {
 
         Connection databaseConnection = DatabaseConfiguration.getDatabaseConnection();
         try {
+            PreparedStatement ps = databaseConnection.prepareStatement("SELECT COUNT(singer_id) + 1 FROM Singer");
+            ResultSet rs = ps.executeQuery();
+            int index = 0;
+            if (rs.next()){
+                index = rs.getInt(1);
+            }
+            if (index == 0){
+                index += 1;
+            }
             PreparedStatement preparedStatement = databaseConnection.prepareStatement(preparedSql);
-            preparedStatement.setInt(1, singer.getId());
+            preparedStatement.setInt(1, index);
             preparedStatement.setString(2, singer.getName());
             preparedStatement.setString(3, singer.getMusic_type().toString());
             preparedStatement.setInt(4, singer.getPrice_per_hour());
             preparedStatement.execute();
-            System.out.println("Added singer with id = " + singer.getId());
+            System.out.println("Added singer with id = " + index);
         } catch (SQLException e) {
             e.printStackTrace();
         }

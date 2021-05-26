@@ -13,7 +13,7 @@ public class Outdoor extends Location {
     public Outdoor(String name, String address, Phone contact, Integer capacity, Integer price_per_hour, Integer surface) {
         super(name, address, contact, capacity);
         outdoors++;
-        this.id = outdoors;
+        //this.id = outdoors;
         this.price_per_hour = price_per_hour;
         this.surface = surface;
     }

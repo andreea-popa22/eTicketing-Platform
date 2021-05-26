@@ -16,12 +16,21 @@ public class ActorRepository {
 
         Connection databaseConnection = DatabaseConfiguration.getDatabaseConnection();
         try {
+            PreparedStatement ps = databaseConnection.prepareStatement("SELECT COUNT(actor_id) + 1 FROM Actor");
+            ResultSet rs = ps.executeQuery();
+            int index = 0;
+            if (rs.next()){
+                index = rs.getInt(1);
+            }
+            if (index == 0){
+                index += 1;
+            }
             PreparedStatement preparedStatement = databaseConnection.prepareStatement(preparedSql);
-            preparedStatement.setInt(1, actor.getId());
+            preparedStatement.setInt(1, index);
             preparedStatement.setString(2, actor.getName());
             preparedStatement.setInt(3, actor.getPrice_per_play());
             preparedStatement.execute();
-            System.out.println("Added actor with id = " + actor.getId());
+            System.out.println("Added actor with id = " + index);
         } catch (SQLException e) {
             e.printStackTrace();
         }

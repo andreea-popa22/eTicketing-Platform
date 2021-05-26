@@ -13,7 +13,7 @@ public class Arena extends Location {
     public Arena(String name, String address, Phone contact, Integer capacity, Integer price_per_hour, Integer surface) {
         super(name, address, contact, capacity);
         arenas++;
-        this.id = arenas;
+        //this.id = arenas;
         this.price_per_hour = price_per_hour;
         this.surface = surface;
     }

@@ -14,7 +14,7 @@ public class Actor {
 
     public Actor(String name, Integer price_per_play) {
         actors ++;
-        this.id = actors;
+        //this.id = actors;
         this.name = name;
         this.price_per_play = price_per_play;
         Service.all_actors.add(this);

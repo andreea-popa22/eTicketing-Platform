@@ -17,8 +17,17 @@ public class TheatreRepository {
 
         Connection databaseConnection = DatabaseConfiguration.getDatabaseConnection();
         try {
+            PreparedStatement ps = databaseConnection.prepareStatement("SELECT COUNT(theatre_id) + 1 FROM Theatre");
+            ResultSet rs = ps.executeQuery();
+            int index = 0;
+            if (rs.next()){
+                index = rs.getInt(1);
+            }
+            if (index == 0){
+                index += 1;
+            }
             PreparedStatement preparedStatement = databaseConnection.prepareStatement(preparedSql);
-            preparedStatement.setInt(1, theatre.getId());
+            preparedStatement.setInt(1, index);
             preparedStatement.setString(2, theatre.getName());
             preparedStatement.setString(3, theatre.getAddress());
             preparedStatement.setString(4, theatre.getContact().toString());
@@ -26,7 +35,7 @@ public class TheatreRepository {
             preparedStatement.setInt(6, theatre.getPrice_per_hour());
             preparedStatement.setInt(7, theatre.getSurface());
             preparedStatement.execute();
-            System.out.println("Added theatre with id = " + theatre.getId());
+            System.out.println("Added theatre with id = " + index);
         } catch (SQLException e) {
             e.printStackTrace();
         }

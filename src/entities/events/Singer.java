@@ -15,7 +15,7 @@ public class Singer {
 
     public Singer(String name, Integer price_per_hour, SingerType music_type) {
         singers ++;
-        this.id = singers;
+        //this.id = singers;
         this.name = name;
         this.price_per_hour = price_per_hour;
         this.music_type = music_type;
