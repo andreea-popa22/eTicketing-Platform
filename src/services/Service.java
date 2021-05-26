@@ -44,6 +44,11 @@ public class Service {
         return p;
     }
 
+    public static Phone stringToPhone(String s){
+        Phone p = new Phone(s);
+        return p;
+    }
+
     public static Client addClient(String client) {
         Scanner scanner = new Scanner(System.in);
         Client c = null;
@@ -85,6 +90,13 @@ public class Service {
         Organizer o = new Organizer(f_name, l_name, phone);
 
         return o;
+    }
+
+    public static void initLists(){
+        Service.all_singers = new ArrayList<>();
+        Service.all_actors = new ArrayList<>();
+        Service.all_locations = new ArrayList<>();
+        Service.all_events = new ArrayList<>();
     }
 
 }

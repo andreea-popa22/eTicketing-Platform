@@ -5,6 +5,7 @@ import services.Service;
 import java.util.Objects;
 
 public class Singer {
+    private Integer id;
     private String name;
     private SingerType music_type;
     private Integer price_per_hour;
@@ -13,11 +14,20 @@ public class Singer {
     public Singer() {}  //Empty constructor
 
     public Singer(String name, Integer price_per_hour, SingerType music_type) {
+        singers ++;
+        this.id = singers;
         this.name = name;
         this.price_per_hour = price_per_hour;
         this.music_type = music_type;
-        singers ++;
         Service.all_singers.add(this);
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getName() {

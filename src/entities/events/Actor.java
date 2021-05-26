@@ -5,6 +5,7 @@ import services.Service;
 import java.util.Objects;
 
 public class Actor {
+    private Integer id;
     private String name;
     private Integer price_per_play;
     public static Integer actors = 0;
@@ -12,10 +13,19 @@ public class Actor {
     public Actor() {}
 
     public Actor(String name, Integer price_per_play) {
+        actors ++;
+        this.id = actors;
         this.name = name;
         this.price_per_play = price_per_play;
-        actors ++;
         Service.all_actors.add(this);
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getName() {

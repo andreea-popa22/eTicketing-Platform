@@ -17,10 +17,7 @@ public class Menu {
     public static void main(String[] args) {
         TicketsBought tickets = TicketsBought.getInstance();
         Service service = Service.getInstance();
-        Service.all_singers = new ArrayList<>();
-        Service.all_actors = new ArrayList<>();
-        Service.all_locations = new ArrayList<>();
-        Service.all_events = new ArrayList<>();
+        Service.initLists();
         System.out.println("Welcome to eTicketing! What type of user are you? 1.Client 2.Organizer");
         int ticket_id = 4;
         Scanner scanner = new Scanner(System.in);

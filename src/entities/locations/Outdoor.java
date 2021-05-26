@@ -3,15 +3,27 @@ package entities.locations;
 import java.util.Objects;
 
 public class Outdoor extends Location {
+    private Integer id;
     private Integer price_per_hour;
     private Integer surface;
+    public static Integer outdoors = 0;
 
     public Outdoor() {}; // Empty constructor
 
     public Outdoor(String name, String address, Phone contact, Integer capacity, Integer price_per_hour, Integer surface) {
         super(name, address, contact, capacity);
+        outdoors++;
+        this.id = outdoors;
         this.price_per_hour = price_per_hour;
         this.surface = surface;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Integer getPrice_per_hour() {
